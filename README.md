@@ -150,7 +150,7 @@ app.post('/kyc', zValidator('json', z.object({ pan: zPAN(), ifsc: zIFSC() })), (
 
 ## Notes and known limits
 
-- **GSTIN**: special registrations (UN bodies, non-resident OIDAR, TDS/TCS) use a different structure in characters 3–12 and are rejected. Use `{ checksum: false }` on `isValidGSTIN` only if you have a reason.
+- **GSTIN**: only regular PAN-based registrations are accepted. Special registrations (UN bodies with a UIN, non-resident OIDAR, TAN-based TDS/TCS) use a different structure in characters 3–12 and are rejected; `{ checksum: false }` only skips the 15th-character check, it does not accept those formats.
 - **Aadhaar**: the Verhoeff check catches all single-digit typos and adjacent swaps, but random 12-digit numbers still pass about 1 time in 10. Never log or store full Aadhaar numbers; mask them (see UIDAI guidance).
 - **Vehicle numbers**: state-series formats vary by RTO; the rule here is deliberately permissive within a known state prefix.
 - **Mobile**: Indian mobile numbers only, not landlines.
