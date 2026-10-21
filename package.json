@@ -73,7 +73,8 @@
     "changeset": "changeset",
     "release": "npm run build && changeset publish",
     "prepublishOnly": "npm run lint && npm run typecheck && npm test && npm run build",
-    "test:zod3": "vitest run --config vitest.zod3.config.ts"
+    "test:zod3": "vitest run --config vitest.zod3.config.ts",
+    "check:exports": "publint && attw --pack . --profile node16"
   },
   "peerDependencies": {
     "zod": "^3.23.0 || ^4.0.0"
@@ -84,13 +85,16 @@
     }
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@changesets/cli": "^2.31.1",
     "@eslint/js": "^10.0.1",
+    "@types/node": "^20.19.43",
     "@vitest/coverage-v8": "^4.1.12",
     "eslint": "^10.13.0",
     "prettier": "^3.9.10",
+    "publint": "^0.3.25",
     "tsup": "^8.5.1",
-    "typescript": "^6.0.3",
+    "typescript": "~5.9",
     "typescript-eslint": "^8.72.0",
     "vitest": "^4.1.12",
     "zod": "^4.6.7",
