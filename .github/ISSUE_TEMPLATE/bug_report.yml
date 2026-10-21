@@ -1,0 +1,29 @@
+name: Bug report
+description: A value is accepted or rejected incorrectly, or something else is broken
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please never paste a real person's Aadhaar, PAN or phone number. Use a synthetic value that reproduces the problem.
+  - type: input
+    id: validator
+    attributes:
+      label: Validator
+      placeholder: zGSTIN / isValidPAN / ...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Input, expected result and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source for the rule
+      description: Link to official docs showing the format, if the bug is about a rule.
+  - type: input
+    id: versions
+    attributes:
+      label: zod-india, zod and Node versions

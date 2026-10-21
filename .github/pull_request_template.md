@@ -1,0 +1,4 @@
+- [ ] Tests added or updated (coverage stays at 100%)
+- [ ] `npm run lint && npm run typecheck && npm test` pass
+- [ ] Changeset added (`npx changeset`) if this changes published behaviour
+- [ ] No real personal data in tests or docs

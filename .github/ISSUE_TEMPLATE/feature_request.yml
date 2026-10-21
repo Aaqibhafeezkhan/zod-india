@@ -1,0 +1,15 @@
+name: Feature request
+description: Suggest a new format or option
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What format or option?
+    validations:
+      required: true
+  - type: textarea
+    id: spec
+    attributes:
+      label: Official specification
+      description: Link to a government or standards body source for the format.
