@@ -72,7 +72,8 @@
     "test:coverage": "vitest run --coverage",
     "changeset": "changeset",
     "release": "npm run build && changeset publish",
-    "prepublishOnly": "npm run lint && npm run typecheck && npm test && npm run build"
+    "prepublishOnly": "npm run lint && npm run typecheck && npm test && npm run build",
+    "test:zod3": "vitest run --config vitest.zod3.config.ts"
   },
   "peerDependencies": {
     "zod": "^3.23.0 || ^4.0.0"
