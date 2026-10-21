@@ -1,0 +1,98 @@
+{
+  "name": "zod-india",
+  "version": "0.1.0",
+  "description": "Zod schemas and zero-dependency validators for Indian formats: GSTIN, PAN, IFSC, UPI, mobile, PIN code, Aadhaar, vehicle registration and TAN.",
+  "license": "MIT",
+  "author": "Krrish Kumar (https://github.com/Krrishkumar125)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Krrishkumar125/zod-india.git"
+  },
+  "homepage": "https://github.com/Krrishkumar125/zod-india#readme",
+  "bugs": "https://github.com/Krrishkumar125/zod-india/issues",
+  "keywords": [
+    "zod",
+    "india",
+    "gstin",
+    "gst",
+    "pan",
+    "ifsc",
+    "upi",
+    "vpa",
+    "aadhaar",
+    "verhoeff",
+    "pincode",
+    "mobile",
+    "validation",
+    "tan",
+    "vehicle-registration"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./validators": {
+      "import": {
+        "types": "./dist/validators.d.ts",
+        "default": "./dist/validators.js"
+      },
+      "require": {
+        "types": "./dist/validators.d.cts",
+        "default": "./dist/validators.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "changeset": "changeset",
+    "release": "npm run build && changeset publish",
+    "prepublishOnly": "npm run lint && npm run typecheck && npm test && npm run build"
+  },
+  "peerDependencies": {
+    "zod": "^3.23.0 || ^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.31.1",
+    "@eslint/js": "^10.0.1",
+    "@vitest/coverage-v8": "^4.1.12",
+    "eslint": "^10.13.0",
+    "prettier": "^3.9.10",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^4.1.12",
+    "zod": "^4.6.7",
+    "zod3": "npm:zod@^3.25.76"
+  }
+}
