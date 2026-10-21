@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [18, 20, 22]
+        node: [20, 22]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,3 +29,21 @@ jobs:
       - run: npm run test:zod3
       - run: npm run build
       - run: npm run check:exports
+
+  node18-runtime:
+    name: Node 18 runtime (built package, zod v3 and v4)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: node test/smoke.mjs
+      - name: Smoke test with zod v3
+        run: npm install --no-save zod@^3 && node test/smoke.mjs
