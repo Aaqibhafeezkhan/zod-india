@@ -1,6 +1,6 @@
 {
   "name": "zod-india",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Zod schemas and zero-dependency helpers for Indian formats: validate GSTIN, PAN, IFSC, UPI, mobile, PIN, Aadhaar, vehicle numbers; format ₹ lakh/crore and amounts in words; mask PII; generate checksum-valid test data.",
   "license": "MIT",
   "author": "Krrish Kumar (https://github.com/Krrishkumar125)",
