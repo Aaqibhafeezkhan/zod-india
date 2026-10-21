@@ -329,3 +329,6 @@ export function isValidVehicleNumber(value: string): boolean {
   if (!m) return false;
   return VEHICLE_STATE_CODES.has(m[1] as string) && Number(m[2]) > 0 && Number(m[4]) > 0;
 }
+
+export * from './format';
+export * from './lookup';

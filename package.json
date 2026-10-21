@@ -1,7 +1,7 @@
 {
   "name": "zod-india",
   "version": "0.2.0",
-  "description": "Zod schemas and zero-dependency validators for Indian formats: GSTIN, PAN, IFSC, UPI, mobile, PIN code, Aadhaar, vehicle registration and TAN.",
+  "description": "Zod schemas and zero-dependency helpers for Indian formats: validate GSTIN, PAN, IFSC, UPI, mobile, PIN, Aadhaar, vehicle numbers; format ₹ lakh/crore and amounts in words; mask PII; generate checksum-valid test data.",
   "license": "MIT",
   "author": "Krrish Kumar (https://github.com/Krrishkumar125)",
   "repository": {
@@ -25,7 +25,14 @@
     "mobile",
     "validation",
     "tan",
-    "vehicle-registration"
+    "vehicle-registration",
+    "inr",
+    "lakh",
+    "crore",
+    "rupees-in-words",
+    "faker",
+    "test-data",
+    "mask"
   ],
   "type": "module",
   "sideEffects": false,
@@ -51,6 +58,16 @@
       "require": {
         "types": "./dist/validators.d.cts",
         "default": "./dist/validators.cjs"
+      }
+    },
+    "./testing": {
+      "import": {
+        "types": "./dist/testing.d.ts",
+        "default": "./dist/testing.js"
+      },
+      "require": {
+        "types": "./dist/testing.d.cts",
+        "default": "./dist/testing.cjs"
       }
     },
     "./package.json": "./package.json"

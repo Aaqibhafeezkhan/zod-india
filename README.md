@@ -1,5 +1,10 @@
 # zod-india
 
+[![npm](https://img.shields.io/npm/v/zod-india)](https://www.npmjs.com/package/zod-india)
+[![CI](https://github.com/Krrishkumar125/zod-india/actions/workflows/ci.yml/badge.svg)](https://github.com/Krrishkumar125/zod-india/actions/workflows/ci.yml)
+![coverage 100%](https://img.shields.io/badge/coverage-100%25-brightgreen)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/zod-india)](https://bundlephobia.com/package/zod-india)
+
 [Zod](https://zod.dev) schemas and zero-dependency validators for Indian identifiers and formats:
 **GSTIN, PAN, TAN, IFSC, UPI ID, mobile number, PIN code, Aadhaar and vehicle registration**.
 
@@ -7,6 +12,9 @@
 - Normalises messy input (`" 27aapfu0939f1zv "` → `27AAPFU0939F1ZV`, `098765 43210` → `+919876543210`).
 - Works with **Zod v3 and v4** (peer dependency). No other runtime dependencies.
 - Pure functions are importable without Zod from `zod-india/validators`.
+- Indian display helpers: `₹12,34,567.50`, `₹1.5 Cr`, amounts in words (`one crore twenty-three lakh…`), PAN/mobile/Aadhaar masking.
+- Offline lookups: state + RTO from a vehicle number, postal zone from a PIN, bank code from an IFSC.
+- Checksum-valid **fake data for tests** (`zod-india/testing`), seedable.
 - ESM + CJS, fully typed, tree-shakeable (`sideEffects: false`), Node 18+.
 
 > **Limits.** Every check is offline: format rules plus the published checksum where one exists.
@@ -80,6 +88,65 @@ panEntityType('AAPFU0939F'); // 'Firm / LLP'
 - `verhoeffValidate(digits)` / `verhoeffGenerate(digits)`: general-purpose Verhoeff.
 - `gstinCheckChar(first14)`: compute the GSTIN check character.
 - `parseGSTIN`, `panEntityType`, and the tables `GST_STATE_CODES`, `PAN_ENTITY_TYPES`, `VEHICLE_STATE_CODES`.
+
+## Formatting (lakh / crore)
+
+```ts
+import { formatINR, formatINRCompact, toIndianWords, rupeesInWords } from 'zod-india/validators';
+
+formatINR(1234567.5); // '₹12,34,567.50'
+formatINR(1500, { decimals: 0, symbol: 'Rs ' }); // 'Rs 1,500'
+formatINRCompact(15000000); // '₹1.5 Cr'   (also '₹12 L', '₹45.3K')
+toIndianWords(12345678); // 'one crore twenty-three lakh forty-five thousand six hundred seventy-eight'
+rupeesInWords(1250.5); // 'Rupees one thousand two hundred fifty and fifty paise only'
+```
+
+No `Intl` / ICU dependency, so the output is identical on Node, browsers, Bun, Deno and edge runtimes.
+
+Masking and display: `maskPAN('ABCPE1234F')` → `AB******4F`, `maskMobile('9876543210')` → `+91 ******3210`,
+`formatMobile('09876543210')` → `+91 98765 43210`, `formatAadhaar(…)` → `2345 6789 0123`.
+
+## Lookups (offline)
+
+```ts
+import { parseVehicleNumber, pincodeZone, parseIFSC, parseGSTIN } from 'zod-india/validators';
+
+parseVehicleNumber('DL 1C AB 1234'); // { series: 'state', stateCode: 'DL', state: 'Delhi', rto: '01' }
+parseVehicleNumber('22 BH 1234 AB'); // { series: 'BH', year: '22' }
+pincodeZone('560001'); // { zone: 'Southern', regions: ['Andhra Pradesh', 'Telangana', 'Karnataka'] }
+parseIFSC('HDFC0001234'); // { bank: 'HDFC', branch: '001234' }
+parseGSTIN('27AAPFU0939F1ZV').state; // 'Maharashtra'
+```
+
+For full branch/bank names from an IFSC, use Razorpay's [`ifsc`](https://github.com/razorpay/ifsc) dataset; this package stays tiny and offline.
+
+## Test data
+
+```ts
+import { fakeGSTIN, fakePAN, fakeAadhaar, createFaker, seededRandom } from 'zod-india/testing';
+
+fakeGSTIN(); // random, checksum-valid, e.g. '07ABCCD1234E1Z5'
+fakeGSTIN('27'); // Maharashtra
+const f = createFaker(seededRandom(42)); // reproducible fixtures for snapshots
+f.aadhaar(); // passes Verhoeff
+```
+
+Generated values are random and synthetic. Use them only in tests, seeds and demos.
+
+## With react-hook-form / Hono
+
+```ts
+// react-hook-form
+import { zodResolver } from '@hookform/resolvers/zod';
+const schema = z.object({ gstin: zGSTIN({ message: 'Check your GSTIN' }), phone: zMobile() });
+useForm({ resolver: zodResolver(schema) });
+
+// Hono
+import { zValidator } from '@hono/zod-validator';
+app.post('/kyc', zValidator('json', z.object({ pan: zPAN(), ifsc: zIFSC() })), (c) =>
+  c.json(c.req.valid('json')),
+);
+```
 
 ## Notes and known limits
 

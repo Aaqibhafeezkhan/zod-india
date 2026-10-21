@@ -14,4 +14,7 @@ for (const m of [esm, cjs]) {
   assert.equal(m.maskAadhaar('234123412346'), 'XXXX XXXX 2346');
 }
 assert.equal(esmValidators.isValidIFSC('SBIN0000001'), true);
+assert.equal(esmValidators.formatINR(1234567.5), '₹12,34,567.50');
+const testing = await import('zod-india/testing');
+assert.equal(esm.isValidGSTIN(testing.fakeGSTIN()), true);
 console.log(`smoke ok on Node ${process.version}`);
