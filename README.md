@@ -29,7 +29,7 @@ const Merchant = z.object({
   gstin: zGSTIN(),
   pan: zPAN(),
   phone: zMobile(),
-  aadhaar: zAadhaar().transform(maskAadhaar), // store only the masked form
+  aadhaar: zAadhaar().transform((v) => maskAadhaar(v)), // store only the masked form
 });
 
 Merchant.parse({
