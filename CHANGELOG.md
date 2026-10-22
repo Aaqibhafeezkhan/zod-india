@@ -1,5 +1,12 @@
 # zod-india
 
+## 0.3.1
+
+### Patch Changes
+
+- README: clarify which GSTIN registrations are accepted (regular GSTINs; UIN, OIDAR and TAN-based TDS/TCS registrations are rejected on purpose).
+- Dev dependency security updates (no runtime changes).
+
 ## 0.3.0
 
 ### Minor Changes
