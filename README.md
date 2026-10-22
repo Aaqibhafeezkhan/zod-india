@@ -4,6 +4,7 @@
 [![CI](https://github.com/Krrishkumar125/zod-india/actions/workflows/ci.yml/badge.svg)](https://github.com/Krrishkumar125/zod-india/actions/workflows/ci.yml)
 ![coverage 100%](https://img.shields.io/badge/coverage-100%25-brightgreen)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/zod-india)](https://bundlephobia.com/package/zod-india)
+[![downloads](https://img.shields.io/npm/dm/zod-india)](https://www.npmjs.com/package/zod-india)
 
 [Zod](https://zod.dev) schemas and zero-dependency validators for Indian identifiers and formats:
 **GSTIN, PAN, TAN, IFSC, UPI ID, mobile number, PIN code, Aadhaar and vehicle registration**.
