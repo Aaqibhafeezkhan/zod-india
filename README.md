@@ -166,6 +166,17 @@ app.post('/kyc', zValidator('json', z.object({ pan: zPAN(), ifsc: zIFSC() })), (
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md). Please never put a real person's identifiers in issues or tests.
 
+## Sibling packages
+
+Other tools by the same author:
+
+- [secret-blast-radius](https://www.npmjs.com/package/secret-blast-radius): what a malicious npm install could steal, plus a rotation plan
+- [create-bullmq-app](https://www.npmjs.com/package/create-bullmq-app): scaffold a production BullMQ + TypeScript service
+- [webhook-crash-lab](https://www.npmjs.com/package/webhook-crash-lab): crash-test webhook handlers against duplicates and races
+- [webhook-crash-lab-mcp](https://www.npmjs.com/package/webhook-crash-lab-mcp): MCP server so coding agents can run webhook-crash-lab
+- [eslint-plugin-bullmq](https://www.npmjs.com/package/eslint-plugin-bullmq): lint rules for BullMQ production pitfalls
+- [eslint-plugin-webhook-safety](https://www.npmjs.com/package/eslint-plugin-webhook-safety): lint rules for unsafe Stripe webhook handlers
+
 ## License
 
 MIT © Krrish Kumar
