@@ -1,5 +1,11 @@
 # zod-india
 
+## 0.3.2
+
+### Patch Changes
+
+- npm metadata: shorter description, focused keywords, homepage/bugs links; README links sibling packages.
+
 ## 0.3.1
 
 ### Patch Changes
