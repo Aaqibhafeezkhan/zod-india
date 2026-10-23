@@ -281,9 +281,7 @@ export function maskAadhaar(value: string, maskChar = 'X'): string {
 export function normalizeUdyam(value: string): string {
   const cleaned = value.replace(/[\s-]+/g, '').toUpperCase();
   const match = /^(UDYAM)([A-Z]{2})(\d{2})(\d{7})$/.exec(cleaned);
-  return match
-    ? `${match[1]}-${match[2]}-${match[3]}-${match[4]}`
-    : cleaned;
+  return match ? `${match[1]}-${match[2]}-${match[3]}-${match[4]}` : cleaned;
 }
 
 /** Validate the Udyam number structure: prefix, two-letter state, two-digit district and seven-digit serial. Input must be normalised. */

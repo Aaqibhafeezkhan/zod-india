@@ -82,7 +82,7 @@ panEntityType('AAPFU0939F'); // 'Firm / LLP'
 | Mobile       | `zMobile()`        | `isValidMobile`        | Optional `+91` / `91` / `0091` / `0`, then 10 digits starting 6–9. Spaces, dashes, brackets allowed                                       | `+919876543210` (E.164) |
 | PIN code     | `zPincode()`       | `isValidPincode`       | 6 digits, first 1–9                                                                                                                       | `110001`                |
 | Aadhaar      | `zAadhaar()`       | `isValidAadhaar`       | 12 digits, not starting 0 or 1, valid Verhoeff check digit                                                                                | `234123412346`          |
-| Udyam (MSME) | `zUdyam()` | `isValidUdyam` | `UDYAM-SS-DD-NNNNNNN`: prefix, 2-letter state, 2-digit district and 7-digit serial | `UDYAM-MH-26-0012345` |
+| Udyam (MSME) | `zUdyam()`         | `isValidUdyam`         | `UDYAM-SS-DD-NNNNNNN`: prefix, 2-letter state, 2-digit district and 7-digit serial                                                        | `UDYAM-MH-26-0012345`   |
 | Vehicle reg. | `zVehicleNumber()` | `isValidVehicleNumber` | `SS NN X(XX) NNNN` with a known state/UT code, or Bharat series `YY BH NNNN XX`                                                           | `DL01AB1234`            |
 
 ### Helpers
