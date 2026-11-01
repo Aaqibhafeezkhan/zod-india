@@ -338,9 +338,7 @@ export const VEHICLE_STATE_CODES: ReadonlySet<string> = new Set([
 
 /** CIN state/UT codes, reusing the vehicle codes where they match MCA's list. */
 const CIN_STATE_CODES: ReadonlySet<string> = new Set(
-  [...VEHICLE_STATE_CODES]
-    .filter((code) => !['DN', 'OR', 'UA'].includes(code))
-    .concat('DH'),
+  [...VEHICLE_STATE_CODES].filter((code) => !['DN', 'OR', 'UA'].includes(code)).concat('DH'),
 );
 
 export const normalizeVehicleNumber = compact;
@@ -373,7 +371,6 @@ export const normalizeCIN = compact;
  */
 export function isValidCIN(value: string): boolean {
   return (
-    /^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/.test(value) &&
-    CIN_STATE_CODES.has(value.slice(6, 8))
+    /^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/.test(value) && CIN_STATE_CODES.has(value.slice(6, 8))
   );
 }
