@@ -337,10 +337,9 @@ export const VEHICLE_STATE_CODES: ReadonlySet<string> = new Set([
 ]);
 
 /** CIN state/UT codes, reusing the vehicle codes where they match MCA's list. */
-const CIN_STATE_CODES: ReadonlySet<string> = new Set([
-  ...[...VEHICLE_STATE_CODES].filter((code) => !['DN', 'OR', 'UA'].includes(code)),
-  'DH',
-]);
+const CIN_STATE_CODES: ReadonlySet<string> = new Set(
+  [...VEHICLE_STATE_CODES].filter((code) => !['DN', 'OR', 'UA'].includes(code)).concat('DH'),
+);
 
 export const normalizeVehicleNumber = compact;
 
