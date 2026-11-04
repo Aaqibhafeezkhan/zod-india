@@ -25,8 +25,8 @@ import {
   verhoeffValidate,
 } from '../src/validators';
 
-// Sample identifiers below are synthetic or the generic examples used in public docs/tutorials.
-// None belong to a real individual.
+// Most sample identifiers below are synthetic or generic public examples.
+// The CIN fixtures are real company identifiers published in MCA records.
 
 describe('GSTIN', () => {
   // 27AAPFU0939F1ZV is the sample GSTIN widely used in GST documentation.
@@ -301,9 +301,31 @@ describe('Udyam', () => {
 });
 
 describe('CIN', () => {
-  it('accepts public company CINs', () => {
+  it('accepts real company CINs from MCA records', () => {
+    // National Aluminium Company Limited (Odisha).
+    expect(isValidCIN('L27203OR1981GOI000920')).toBe(true);
+    // Andhra Engineering Co. Pvt. Ltd., updated to Telangana after state reorganisation.
+    expect(isValidCIN('U74999TG1929PTC000060')).toBe(true);
     expect(isValidCIN('L17110MH1973PLC019786')).toBe(true);
     expect(isValidCIN('L85110KA1981PLC013115')).toBe(true);
+  });
+
+  it('accepts the dedicated CIN state and UT codes', () => {
+    const codes = [
+      'AN', 'AP', 'AR', 'AS', 'BR', 'CH', 'CT', 'DD', 'DL', 'DN', 'GA', 'GJ', 'HP', 'HR', 'JH',
+      'JK', 'KA', 'KL', 'LA', 'LD', 'MH', 'ML', 'MN', 'MP', 'MZ', 'NL', 'OR', 'PB', 'PY', 'RJ',
+      'SK', 'TG', 'TN', 'TR', 'UP', 'UR', 'WB',
+    ];
+
+    for (const code of codes) {
+      expect(isValidCIN(`U12345${code}2020PTC123456`)).toBe(true);
+    }
+  });
+
+  it('rejects vehicle registration codes that are not CIN codes', () => {
+    for (const code of ['CG', 'OD', 'TS', 'UK', 'DH', 'UA']) {
+      expect(isValidCIN(`U12345${code}2020PTC123456`)).toBe(false);
+    }
   });
 
   it('rejects wrong lengths and malformed segments', () => {
