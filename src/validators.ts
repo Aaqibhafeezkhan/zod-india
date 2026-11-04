@@ -336,10 +336,12 @@ export const VEHICLE_STATE_CODES: ReadonlySet<string> = new Set([
   'WB',
 ]);
 
-/** CIN state/UT codes, reusing the vehicle codes where they match MCA's list. */
-const CIN_STATE_CODES: ReadonlySet<string> = new Set(
-  [...VEHICLE_STATE_CODES].filter((code) => !['DN', 'OR', 'UA'].includes(code)).concat('DH'),
-);
+/** State/UT codes used in Corporate Identification Numbers (CINs). */
+export const CIN_STATE_CODES: ReadonlySet<string> = new Set([
+  'AN', 'AP', 'AR', 'AS', 'BR', 'CH', 'CT', 'DD', 'DL', 'DN', 'GA', 'GJ', 'HP', 'HR', 'JH', 'JK',
+  'KA', 'KL', 'LA', 'LD', 'MH', 'ML', 'MN', 'MP', 'MZ', 'NL', 'OR', 'PB', 'PY', 'RJ', 'SK', 'TG',
+  'TN', 'TR', 'UP', 'UR', 'WB',
+]);
 
 export const normalizeVehicleNumber = compact;
 
