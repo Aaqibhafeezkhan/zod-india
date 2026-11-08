@@ -81,6 +81,11 @@ describe('zod schemas', () => {
     },
   );
 
+  it('normalises and validates the real Ladakh CIN', () => {
+    expect(zCIN().parse(' u74999 lh 2021 goi 011282 ')).toBe('U74999LH2021GOI011282');
+    expect(zCIN().safeParse('U74999LA2021GOI011282').success).toBe(false);
+  });
+
   it('rejects non-strings', () => {
     expect(zGSTIN().safeParse(123).success).toBe(false);
     expect(zPAN({ normalize: false }).safeParse(null).success).toBe(false);
