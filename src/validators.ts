@@ -356,7 +356,7 @@ export const CIN_STATE_CODES: ReadonlySet<string> = new Set([
   'JK',
   'KA',
   'KL',
-  'LA',
+  'LH',
   'LD',
   'MH',
   'ML',
