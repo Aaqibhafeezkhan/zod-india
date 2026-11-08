@@ -308,6 +308,8 @@ describe('CIN', () => {
     expect(isValidCIN('U74999TG1929PTC000060')).toBe(true);
     expect(isValidCIN('L17110MH1973PLC019786')).toBe(true);
     expect(isValidCIN('L85110KA1981PLC013115')).toBe(true);
+    expect(isValidCIN('U74999LH2021GOI011282')).toBe(true);
+    expect(isValidCIN('U74999LA2021GOI011282')).toBe(false);
   });
 
   it('accepts the dedicated CIN state and UT codes', () => {
@@ -330,7 +332,7 @@ describe('CIN', () => {
       'JK',
       'KA',
       'KL',
-      'LA',
+      'LH',
       'LD',
       'MH',
       'ML',
