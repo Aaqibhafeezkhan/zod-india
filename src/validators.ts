@@ -313,7 +313,7 @@ export const VEHICLE_STATE_CODES: ReadonlySet<string> = new Set([
   'JK',
   'KA',
   'KL',
-  'LH',
+  'LA',
   'LD',
   'MH',
   'ML',
