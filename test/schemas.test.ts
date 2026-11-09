@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import {
   zAadhaar,
+  zCIN,
   zGSTIN,
   zIFSC,
   zMobile,
@@ -18,6 +19,14 @@ const issueMessage = (r: { success: boolean; error?: { issues: { message: string
 
 describe('zod schemas', () => {
   it.each([
+    [
+      'zCIN',
+      zCIN,
+      ' l17110 mh 1973 plc 019786 ',
+      'L17110MH1973PLC019786',
+      'L17110ZZ1973PLC019786',
+      'Invalid CIN',
+    ],
     ['zGSTIN', zGSTIN, ' 27aapfu0939f1zv ', '27AAPFU0939F1ZV', '27AAPFU0939F1ZA', 'Invalid GSTIN'],
     ['zPAN', zPAN, 'abcpd 1234e', 'ABCPD1234E', 'ABCXD1234E', 'Invalid PAN'],
     ['zTAN', zTAN, 'dela12345b', 'DELA12345B', 'DEL123456B', 'Invalid TAN'],
@@ -71,6 +80,11 @@ describe('zod schemas', () => {
       expect(strict.safeParse(input).success).toBe(false);
     },
   );
+
+  it('normalises and validates the real Ladakh CIN', () => {
+    expect(zCIN().parse(' u74999 lh 2021 goi 011282 ')).toBe('U74999LH2021GOI011282');
+    expect(zCIN().safeParse('U74999LA2021GOI011282').success).toBe(false);
+  });
 
   it('rejects non-strings', () => {
     expect(zGSTIN().safeParse(123).success).toBe(false);

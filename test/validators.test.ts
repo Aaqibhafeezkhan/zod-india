@@ -3,6 +3,7 @@ import {
   GST_STATE_CODES,
   gstinCheckChar,
   isValidAadhaar,
+  isValidCIN,
   isValidGSTIN,
   isValidIFSC,
   isValidMobile,
@@ -13,6 +14,7 @@ import {
   isValidUdyam,
   isValidVehicleNumber,
   maskAadhaar,
+  normalizeCIN,
   normalizeMobile,
   normalizeUPI,
   normalizeUdyam,
@@ -23,8 +25,8 @@ import {
   verhoeffValidate,
 } from '../src/validators';
 
-// Sample identifiers below are synthetic or the generic examples used in public docs/tutorials.
-// None belong to a real individual.
+// Most sample identifiers below are synthetic or generic public examples.
+// The CIN fixtures are real company identifiers published in MCA records.
 
 describe('GSTIN', () => {
   // 27AAPFU0939F1ZV is the sample GSTIN widely used in GST documentation.
@@ -247,6 +249,10 @@ describe('vehicle registration', () => {
     ])
       expect(isValidVehicleNumber(v)).toBe(true);
   });
+  it('keeps Ladakh vehicle registration codes separate from CIN codes', () => {
+    expect(isValidVehicleNumber('LA01AB1234')).toBe(true);
+    expect(isValidVehicleNumber('LH01AB1234')).toBe(false);
+  });
   it('accepts Bharat series', () => {
     expect(isValidVehicleNumber('22BH1234AB')).toBe(true);
     expect(isValidVehicleNumber('21BH0001A')).toBe(true);
@@ -295,5 +301,97 @@ describe('Udyam', () => {
     expect(normalizeUdyam(' udyam mh 26 0012345 ')).toBe('UDYAM-MH-26-0012345');
     expect(normalizeUdyam('Udyam-MH-26-0012345')).toBe('UDYAM-MH-26-0012345');
     expect(normalizeUdyam('invalid input')).toBe('INVALIDINPUT');
+  });
+});
+
+describe('CIN', () => {
+  it('accepts real company CINs from MCA records', () => {
+    // National Aluminium Company Limited (Odisha).
+    expect(isValidCIN('L27203OR1981GOI000920')).toBe(true);
+    // Andhra Engineering Co. Pvt. Ltd., updated to Telangana after state reorganisation.
+    expect(isValidCIN('U74999TG1929PTC000060')).toBe(true);
+    expect(isValidCIN('L17110MH1973PLC019786')).toBe(true);
+    expect(isValidCIN('L85110KA1981PLC013115')).toBe(true);
+    expect(isValidCIN('U74999LH2021GOI011282')).toBe(true);
+    expect(isValidCIN('U74999LA2021GOI011282')).toBe(false);
+  });
+
+  it('accepts the dedicated CIN state and UT codes', () => {
+    const codes = [
+      'AN',
+      'AP',
+      'AR',
+      'AS',
+      'BR',
+      'CH',
+      'CT',
+      'DD',
+      'DL',
+      'DN',
+      'GA',
+      'GJ',
+      'HP',
+      'HR',
+      'JH',
+      'JK',
+      'KA',
+      'KL',
+      'LH',
+      'LD',
+      'MH',
+      'ML',
+      'MN',
+      'MP',
+      'MZ',
+      'NL',
+      'OR',
+      'PB',
+      'PY',
+      'RJ',
+      'SK',
+      'TG',
+      'TN',
+      'TR',
+      'UP',
+      'UR',
+      'WB',
+    ];
+
+    for (const code of codes) {
+      expect(isValidCIN(`U12345${code}2020PTC123456`)).toBe(true);
+    }
+  });
+
+  it('rejects vehicle registration codes that are not CIN codes', () => {
+    for (const code of ['CG', 'OD', 'TS', 'UK', 'DH', 'UA']) {
+      expect(isValidCIN(`U12345${code}2020PTC123456`)).toBe(false);
+    }
+  });
+
+  it('rejects wrong lengths and malformed segments', () => {
+    for (const value of [
+      'L17110MH1973PLC01978',
+      'L17110MH1973PLC0197860',
+      'X17110MH1973PLC019786',
+      'L7110MH1973PLC019786',
+      'L1711AMH1973PLC019786',
+      'L17110MH19ABPLC019786',
+      'L17110MH1973PL1019786',
+      'L17110MH1973PLC01978A',
+      'l17110mh1973plc019786',
+      '',
+    ]) {
+      expect(isValidCIN(value)).toBe(false);
+    }
+  });
+
+  it('rejects unknown state codes', () => {
+    expect(isValidCIN('L17110ZZ1973PLC019786')).toBe(false);
+  });
+
+  it('normalises case, whitespace and hyphens', () => {
+    expect(normalizeCIN(' l17110 mh 1973 plc 019786 ')).toBe('L17110MH1973PLC019786');
+    expect(normalizeCIN('L17110-MH-1973-PLC-019786')).toBe('L17110MH1973PLC019786');
+    expect(normalizeCIN('invalid input')).toBe('INVALIDINPUT');
   });
 });

@@ -336,6 +336,47 @@ export const VEHICLE_STATE_CODES: ReadonlySet<string> = new Set([
   'WB',
 ]);
 
+/** State/UT codes used in Corporate Identification Numbers (CINs). */
+export const CIN_STATE_CODES: ReadonlySet<string> = new Set([
+  'AN',
+  'AP',
+  'AR',
+  'AS',
+  'BR',
+  'CH',
+  'CT',
+  'DD',
+  'DL',
+  'DN',
+  'GA',
+  'GJ',
+  'HP',
+  'HR',
+  'JH',
+  'JK',
+  'KA',
+  'KL',
+  'LH',
+  'LD',
+  'MH',
+  'ML',
+  'MN',
+  'MP',
+  'MZ',
+  'NL',
+  'OR',
+  'PB',
+  'PY',
+  'RJ',
+  'SK',
+  'TG',
+  'TN',
+  'TR',
+  'UP',
+  'UR',
+  'WB',
+]);
+
 export const normalizeVehicleNumber = compact;
 
 /**
@@ -352,3 +393,20 @@ export function isValidVehicleNumber(value: string): boolean {
 
 export * from './format';
 export * from './lookup';
+
+// ---------------------------------------------------------------------------
+// Corporate Identification Number (CIN)
+// ---------------------------------------------------------------------------
+
+/** Normalise a CIN by removing whitespace and hyphens and upper-casing it. */
+export const normalizeCIN = compact;
+
+/**
+ * Validate the structure of an Indian Corporate Identification Number.
+ * This is a format check only; it does not confirm registration with the MCA.
+ */
+export function isValidCIN(value: string): boolean {
+  return (
+    /^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/.test(value) && CIN_STATE_CODES.has(value.slice(6, 8))
+  );
+}
