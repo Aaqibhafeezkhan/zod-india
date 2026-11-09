@@ -249,6 +249,10 @@ describe('vehicle registration', () => {
     ])
       expect(isValidVehicleNumber(v)).toBe(true);
   });
+  it('keeps Ladakh vehicle registration codes separate from CIN codes', () => {
+    expect(isValidVehicleNumber('LA01AB1234')).toBe(true);
+    expect(isValidVehicleNumber('LH01AB1234')).toBe(false);
+  });
   it('accepts Bharat series', () => {
     expect(isValidVehicleNumber('22BH1234AB')).toBe(true);
     expect(isValidVehicleNumber('21BH0001A')).toBe(true);
