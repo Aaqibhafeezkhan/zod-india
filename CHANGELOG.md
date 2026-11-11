@@ -1,5 +1,15 @@
 # zod-india
 
+## 0.5.0
+
+### Minor Changes
+
+- 08ce7d6: Add CIN (Corporate Identification Number) normalization, validation and a Zod schema (`zCIN`, `isValidCIN`). Thanks @Aaqibhafeezkhan (#6).
+
+### Patch Changes
+
+- npm description and keywords now mention CIN.
+
 ## 0.4.0
 
 ### Minor Changes
