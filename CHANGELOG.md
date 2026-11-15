@@ -1,5 +1,11 @@
 # zod-india
 
+## 0.5.1
+
+### Patch Changes
+
+- 93bfd4f: Fix `formatINRCompact` rolling over to `₹100K` or `₹100 L` at unit boundaries; 99,999 now shows `₹1 L` and 9,999,999 shows `₹1 Cr`. Thanks @saimskywalker (#8).
+
 ## 0.5.0
 
 ### Minor Changes
