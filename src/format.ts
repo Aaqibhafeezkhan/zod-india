@@ -1,3 +1,5 @@
+import { hiBelow100, hindiWords } from './hindi';
+
 /**
  * Display helpers for Indian formats: rupee amounts with lakh/crore grouping,
  * amounts in words (Indian numbering), and safe masking for PAN / mobile / Aadhaar.
@@ -108,26 +110,39 @@ function words(n: number): string {
   return parts.join(' ');
 }
 
+export interface WordsOptions {
+  /** Output language: `'en'` (default) or `'hi'` for Hindi (`toIndianWords(1500, { lang: 'hi' })` → `'एक हज़ार पाँच सौ'`). */
+  lang?: 'en' | 'hi';
+}
+
 /**
  * Integer to words in the Indian numbering system:
  * `toIndianWords(12345678)` → `'one crore twenty-three lakh forty-five thousand six hundred seventy-eight'`.
  */
-export function toIndianWords(n: number): string {
+export function toIndianWords(n: number, options: WordsOptions = {}): string {
   if (!Number.isSafeInteger(n)) throw new TypeError('toIndianWords expects a safe integer');
-  if (n === 0) return 'zero';
-  return `${n < 0 ? 'minus ' : ''}${words(Math.abs(n))}`;
+  const hi = options.lang === 'hi';
+  if (n === 0) return hi ? 'शून्य' : 'zero';
+  return hi
+    ? `${n < 0 ? 'ऋण ' : ''}${hindiWords(Math.abs(n))}`
+    : `${n < 0 ? 'minus ' : ''}${words(Math.abs(n))}`;
 }
 
 /**
  * Amount in words as written on cheques and invoices:
  * `rupeesInWords(1250.5)` → `'Rupees one thousand two hundred fifty and fifty paise only'`.
+ * With `{ lang: 'hi' }`: `'एक हज़ार दो सौ पचास रुपये और पचास पैसे'`.
  */
-export function rupeesInWords(amount: number): string {
+export function rupeesInWords(amount: number, options: WordsOptions = {}): string {
   if (!Number.isFinite(amount) || amount < 0)
     throw new TypeError('rupeesInWords expects a non-negative number');
   const paiseTotal = Math.round(amount * 100);
   const rupees = Math.floor(paiseTotal / 100);
   const paise = paiseTotal % 100;
+  if (options.lang === 'hi') {
+    const r = `${toIndianWords(rupees, options)} रुपये`;
+    return paise ? `${r} और ${hiBelow100(paise)} पैसे` : r;
+  }
   const r = `Rupees ${toIndianWords(rupees)}`;
   return paise ? `${r} and ${below100(paise)} paise only` : `${r} only`;
 }

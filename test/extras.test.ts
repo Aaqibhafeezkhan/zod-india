@@ -21,6 +21,7 @@ import {
   toIndianWords,
 } from '../src/validators';
 import { zGSTIN } from '../src/index';
+import { hiBelow100 } from '../src/hindi';
 import * as fake from '../src/testing';
 
 describe('format', () => {
@@ -65,6 +66,33 @@ describe('format', () => {
     );
     expect(rupeesInWords(100000)).toBe('Rupees one lakh only');
     expect(() => rupeesInWords(-1)).toThrow(TypeError);
+  });
+  it('writes numbers in Hindi words', () => {
+    const hi = { lang: 'hi' } as const;
+    expect(toIndianWords(0, hi)).toBe('शून्य');
+    expect(toIndianWords(5, hi)).toBe('पाँच');
+    expect(toIndianWords(15, hi)).toBe('पंद्रह');
+    expect(toIndianWords(99, hi)).toBe('निन्यानवे');
+    expect(toIndianWords(100, hi)).toBe('एक सौ');
+    expect(toIndianWords(101, hi)).toBe('एक सौ एक');
+    expect(toIndianWords(110000, hi)).toBe('एक लाख दस हज़ार');
+    expect([31, 79, 95].map((n) => toIndianWords(n, hi))).toEqual(['इकत्तीस', 'उनासी', 'पचानवे']);
+    expect(toIndianWords(1000, hi)).toBe('एक हज़ार');
+    expect(toIndianWords(12345678, hi)).toBe('एक करोड़ तेईस लाख पैंतालीस हज़ार छह सौ अठहत्तर');
+    expect(toIndianWords(1e12, hi)).toBe('एक लाख करोड़');
+    expect(toIndianWords(-20000000, hi)).toBe('ऋण दो करोड़');
+    expect(toIndianWords(40, { lang: 'en' })).toBe('forty');
+    expect(() => toIndianWords(1.5, hi)).toThrow(TypeError);
+    const table = Array.from({ length: 99 }, (_, i) => hiBelow100(i + 1));
+    expect(table.every(Boolean)).toBe(true);
+    expect(new Set(table).size).toBe(99);
+  });
+  it('writes rupees in Hindi words', () => {
+    const hi = { lang: 'hi' } as const;
+    expect(rupeesInWords(1250.5, hi)).toBe('एक हज़ार दो सौ पचास रुपये और पचास पैसे');
+    expect(rupeesInWords(100000, hi)).toBe('एक लाख रुपये');
+    expect(rupeesInWords(0.75, hi)).toBe('शून्य रुपये और पचहत्तर पैसे');
+    expect(() => rupeesInWords(-1, hi)).toThrow(TypeError);
   });
   it('masks and pretty-prints', () => {
     expect(maskPAN('abcpe1234f')).toBe('AB******4F');
