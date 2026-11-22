@@ -1,6 +1,7 @@
 /**
- * Hindi number words for `toIndianWords` / `rupeesInWords` with `{ lang: 'hi' }`.
- * Formal spellings with nukta and chandrabindu (हज़ार, पाँच), as used on invoices.
+ * Hindi number words, published as the separate `zod-india/hindi` entry so the English
+ * helpers never load this table. Formal spellings with nukta and chandrabindu (हज़ार, पाँच),
+ * as used on invoices.
  */
 
 /**
@@ -110,7 +111,7 @@ const HI_BELOW_100 = [
   'निन्यानवे',
 ];
 
-export const hiBelow100 = (n: number): string => HI_BELOW_100[n] as string;
+const hiBelow100 = (n: number): string => HI_BELOW_100[n] as string;
 
 const below1000 = (n: number): string => {
   const h = Math.floor(n / 100);
@@ -119,7 +120,7 @@ const below1000 = (n: number): string => {
 };
 
 /** Positive integer to Hindi words with Indian grouping (same structure as the English path). */
-export function hindiWords(n: number): string {
+function hindiWords(n: number): string {
   if (n >= 1e7) {
     const rest = n % 1e7;
     return `${hindiWords(Math.floor(n / 1e7))} करोड़${rest ? ` ${hindiWords(rest)}` : ''}`;
@@ -132,4 +133,28 @@ export function hindiWords(n: number): string {
   if (thousand) parts.push(`${hiBelow100(thousand)} हज़ार`);
   if (rest) parts.push(below1000(rest));
   return parts.join(' ');
+}
+
+/**
+ * Integer to Hindi words in the Indian numbering system:
+ * `toHindiWords(12345678)` → `'एक करोड़ तेईस लाख पैंतालीस हज़ार छह सौ अठहत्तर'`.
+ */
+export function toHindiWords(n: number): string {
+  if (!Number.isSafeInteger(n)) throw new TypeError('toHindiWords expects a safe integer');
+  if (n === 0) return 'शून्य';
+  return `${n < 0 ? 'ऋण ' : ''}${hindiWords(Math.abs(n))}`;
+}
+
+/**
+ * Amount in Hindi words for invoices:
+ * `rupeesInHindiWords(1250.5)` → `'एक हज़ार दो सौ पचास रुपये और पचास पैसे'`.
+ */
+export function rupeesInHindiWords(amount: number): string {
+  if (!Number.isFinite(amount) || amount < 0)
+    throw new TypeError('rupeesInHindiWords expects a non-negative number');
+  const paiseTotal = Math.round(amount * 100);
+  const rupees = Math.floor(paiseTotal / 100);
+  const paise = paiseTotal % 100;
+  const r = `${toHindiWords(rupees)} रुपये`;
+  return paise ? `${r} और ${hiBelow100(paise)} पैसे` : r;
 }
