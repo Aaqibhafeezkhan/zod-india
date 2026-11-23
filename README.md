@@ -13,7 +13,7 @@
 - Normalises messy input (`" 27aapfu0939f1zv "` → `27AAPFU0939F1ZV`, `098765 43210` → `+919876543210`).
 - Works with **Zod v3 and v4** (peer dependency). No other runtime dependencies.
 - Pure functions are importable without Zod from `zod-india/validators`.
-- Indian display helpers: `₹12,34,567.50`, `₹1.5 Cr`, amounts in words (`one crore twenty-three lakh…`), PAN/mobile/Aadhaar masking.
+- Indian display helpers: `₹12,34,567.50`, `₹1.5 Cr`, amounts in words (`one crore twenty-three lakh…`, or Hindi `एक करोड़ तेईस लाख…` from `zod-india/hindi`), PAN/mobile/Aadhaar masking.
 - Offline lookups: state + RTO from a vehicle number, postal zone from a PIN, bank code from an IFSC.
 - Checksum-valid **fake data for tests** (`zod-india/testing`), seedable.
 - ESM + CJS, fully typed, tree-shakeable (`sideEffects: false`), Node 18+.
@@ -108,6 +108,15 @@ formatINR(1500, { decimals: 0, symbol: 'Rs ' }); // 'Rs 1,500'
 formatINRCompact(15000000); // '₹1.5 Cr'   (also '₹12 L', '₹45.3K')
 toIndianWords(12345678); // 'one crore twenty-three lakh forty-five thousand six hundred seventy-eight'
 rupeesInWords(1250.5); // 'Rupees one thousand two hundred fifty and fifty paise only'
+```
+
+Hindi words live in their own entry, so the English helpers never load the Hindi table:
+
+```ts
+import { toHindiWords, rupeesInHindiWords } from 'zod-india/hindi';
+
+toHindiWords(1500); // 'एक हज़ार पाँच सौ'
+rupeesInHindiWords(1250.5); // 'एक हज़ार दो सौ पचास रुपये और पचास पैसे'
 ```
 
 No `Intl` / ICU dependency, so the output is identical on Node, browsers, Bun, Deno and edge runtimes.

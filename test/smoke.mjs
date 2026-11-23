@@ -15,6 +15,9 @@ for (const m of [esm, cjs]) {
 }
 assert.equal(esmValidators.isValidIFSC('SBIN0000001'), true);
 assert.equal(esmValidators.formatINR(1234567.5), '₹12,34,567.50');
+const hindi = await import('zod-india/hindi');
+assert.equal(hindi.rupeesInHindiWords(1250.5), 'एक हज़ार दो सौ पचास रुपये और पचास पैसे');
+assert.equal(createRequire(import.meta.url)('zod-india/hindi').toHindiWords(5), 'पाँच');
 const testing = await import('zod-india/testing');
 assert.equal(esm.isValidGSTIN(testing.fakeGSTIN()), true);
 console.log(`smoke ok on Node ${process.version}`);
