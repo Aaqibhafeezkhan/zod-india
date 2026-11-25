@@ -39,6 +39,7 @@ export const VEHICLE_STATES: Readonly<Record<string, string>> = Object.freeze({
   SK: 'Sikkim',
   TN: 'Tamil Nadu',
   TR: 'Tripura',
+  TG: 'Telangana',
   TS: 'Telangana',
   UK: 'Uttarakhand',
   UA: 'Uttarakhand (legacy)',

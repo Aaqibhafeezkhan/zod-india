@@ -329,6 +329,7 @@ export const VEHICLE_STATE_CODES: ReadonlySet<string> = new Set([
   'SK',
   'TN',
   'TR',
+  'TG',
   'TS',
   'UK',
   'UA',
