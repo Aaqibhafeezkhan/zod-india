@@ -1,5 +1,16 @@
 # zod-india
 
+## 0.6.0
+
+### Minor Changes
+
+- 6670bb9: Add a `zod-india/hindi` entry with `toHindiWords` and `rupeesInHindiWords` for Hindi number words (हज़ार, लाख, करोड़; "… रुपये और … पैसे"). The English entries do not load the Hindi table. Thanks @KaustubhBarve (#9).
+- 5a281ad: Add driving licence (`zDrivingLicence`, `isValidDrivingLicence`, `parseDrivingLicence`, 15-character Sarathi layout with state, RTO and issue-year checks), passport (`zPassport`, `isValidPassport`) and voter ID / EPIC (`zVoterID`, `isValidVoterID`) validation. New cross-field check `gstinMatchesPANRefinement()` for `z.object(...).superRefine(...)` reports a GSTIN that belongs to a different PAN, and `gstinMatchesPAN(gstin, pan)` does the same without Zod. Both work with Zod v3 and v4.
+
+### Patch Changes
+
+- 0182586: Accept Telangana's `TG` state code on vehicle numbers (used on new registrations since 2024). `TS` is still accepted.
+
 ## 0.5.1
 
 ### Patch Changes
