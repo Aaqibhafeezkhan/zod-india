@@ -1,27 +1,34 @@
 import { z } from 'zod';
 import {
+  gstinMatchesPAN,
   isValidAadhaar,
   isValidCIN,
+  isValidDrivingLicence,
   isValidGSTIN,
   isValidIFSC,
   isValidMobile,
   isValidPAN,
+  isValidPassport,
   isValidPincode,
   isValidTAN,
   isValidUPI,
   isValidUdyam,
   isValidVehicleNumber,
+  isValidVoterID,
   normalizeAadhaar,
   normalizeCIN,
+  normalizeDrivingLicence,
   normalizeGSTIN,
   normalizeIFSC,
   normalizeMobile,
   normalizePAN,
+  normalizePassport,
   normalizePincode,
   normalizeTAN,
   normalizeUPI,
   normalizeUdyam,
   normalizeVehicleNumber,
+  normalizeVoterID,
 } from './validators';
 
 export * from './validators';
@@ -90,3 +97,51 @@ export const zVehicleNumber = (options?: SchemaOptions) =>
 /** Corporate Identification Number schema: 21-character structure and known state code. */
 export const zCIN = (options?: SchemaOptions) =>
   build(isValidCIN, normalizeCIN, 'Invalid CIN', options);
+
+/** Indian passport number schema: one letter and seven digits. */
+export const zPassport = (options?: SchemaOptions) =>
+  build(isValidPassport, normalizePassport, 'Invalid passport number', options);
+
+/** Voter ID (EPIC) schema: three letters and seven digits. */
+export const zVoterID = (options?: SchemaOptions) =>
+  build(isValidVoterID, normalizeVoterID, 'Invalid voter ID (EPIC) number', options);
+
+/** Driving licence schema (15-character Sarathi format). Output is compact upper-case. */
+export const zDrivingLicence = (options?: SchemaOptions) =>
+  build(isValidDrivingLicence, normalizeDrivingLicence, 'Invalid driving licence number', options);
+
+export interface GSTINMatchesPANOptions<K extends string = string> {
+  /** Key of the GSTIN field. Default `'gstin'`. */
+  gstin?: K;
+  /** Key of the PAN field. Default `'pan'`. */
+  pan?: K;
+  /** Error message, reported on the GSTIN field. */
+  message?: string;
+}
+
+/**
+ * Cross-field check for `z.object(...).superRefine(...)`: the PAN inside the GSTIN must be the PAN
+ * on the same form. Skips silently when either field is missing or invalid, so the field schemas
+ * report those errors on their own. Works with Zod v3 and v4.
+ *
+ * ```ts
+ * z.object({ gstin: zGSTIN(), pan: zPAN() }).superRefine(gstinMatchesPANRefinement());
+ * ```
+ */
+export function gstinMatchesPANRefinement(options: GSTINMatchesPANOptions = {}) {
+  const gstinKey = options.gstin ?? 'gstin';
+  const panKey = options.pan ?? 'pan';
+  const message = options.message ?? 'GSTIN does not belong to this PAN';
+  return (
+    data: Record<string, unknown>,
+    ctx: {
+      addIssue: (issue: { code: 'custom'; message: string; path: (string | number)[] }) => void;
+    },
+  ): void => {
+    const gstin = data[gstinKey];
+    const pan = data[panKey];
+    if (typeof gstin !== 'string' || typeof pan !== 'string') return;
+    if (!isValidGSTIN(normalizeGSTIN(gstin)) || !isValidPAN(normalizePAN(pan))) return;
+    if (!gstinMatchesPAN(gstin, pan)) ctx.addIssue({ code: 'custom', message, path: [gstinKey] });
+  };
+}

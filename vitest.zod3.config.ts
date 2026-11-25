@@ -6,5 +6,5 @@ export default defineConfig({
   resolve: {
     alias: { zod: fileURLToPath(new URL('./node_modules/zod3', import.meta.url)) },
   },
-  test: { include: ['test/schemas.test.ts'] },
+  test: { include: ['test/schemas.test.ts', 'test/kyc.test.ts'] },
 });

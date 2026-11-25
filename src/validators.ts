@@ -411,3 +411,90 @@ export function isValidCIN(value: string): boolean {
     /^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/.test(value) && CIN_STATE_CODES.has(value.slice(6, 8))
   );
 }
+
+// ---------------------------------------------------------------------------
+// Cross-checks between identifiers
+// ---------------------------------------------------------------------------
+
+/**
+ * True when the PAN embedded in a GSTIN (characters 3 to 12) is the given PAN.
+ * Both values are normalised first. Returns false if either one is not valid on its own.
+ * Use it when a form collects both, so a GSTIN that belongs to a different business is caught.
+ */
+export function gstinMatchesPAN(gstin: string, pan: string): boolean {
+  const g = normalizeGSTIN(gstin);
+  const p = normalizePAN(pan);
+  return isValidGSTIN(g) && isValidPAN(p) && g.slice(2, 12) === p;
+}
+
+// ---------------------------------------------------------------------------
+// Passport
+// ---------------------------------------------------------------------------
+
+/** Normalise a passport number by removing whitespace and hyphens and upper-casing it. */
+export const normalizePassport = compact;
+
+/**
+ * Validate an Indian passport number: one letter followed by seven digits (`A1234567`).
+ * Format only. There is no published checksum for the number itself.
+ */
+export function isValidPassport(value: string): boolean {
+  return /^[A-Z]\d{7}$/.test(value);
+}
+
+// ---------------------------------------------------------------------------
+// Voter ID (EPIC)
+// ---------------------------------------------------------------------------
+
+/** Normalise an EPIC (voter ID) number by removing whitespace and hyphens and upper-casing it. */
+export const normalizeVoterID = compact;
+
+/** Validate an Election Commission EPIC number: three letters followed by seven digits (`ABC1234567`). Format only. */
+export function isValidVoterID(value: string): boolean {
+  return /^[A-Z]{3}\d{7}$/.test(value);
+}
+
+// ---------------------------------------------------------------------------
+// Driving licence (Sarathi format)
+// ---------------------------------------------------------------------------
+
+/** Lowest issue year accepted in a driving licence number. */
+const DL_MIN_YEAR = 1950;
+
+/**
+ * Normalise a driving licence number. `MH14 20110062821`, `MH-1420110062821` and
+ * `mh14-2011-0062821` all become `MH1420110062821`.
+ */
+export const normalizeDrivingLicence = compact;
+
+/**
+ * Split a normalised 15-character Sarathi driving licence number into its parts, or undefined if it does not fit.
+ * Layout: 2-letter state/UT code, 2-digit RTO code, 4-digit year of first issue, 7-digit serial.
+ */
+export function parseDrivingLicence(
+  value: string,
+  { now = new Date() }: { now?: Date } = {},
+): { stateCode: string; rto: string; year: number; serial: string } | undefined {
+  const m = /^([A-Z]{2})(\d{2})(\d{4})(\d{7})$/.exec(normalizeDrivingLicence(value));
+  if (!m) return undefined;
+  const [, stateCode, rto, yearText, serial] = m as unknown as [
+    string,
+    string,
+    string,
+    string,
+    string,
+  ];
+  const year = Number(yearText);
+  if (!VEHICLE_STATE_CODES.has(stateCode) || rto === '00' || /^0+$/.test(serial)) return undefined;
+  if (year < DL_MIN_YEAR || year > now.getFullYear()) return undefined;
+  return { stateCode, rto, year, serial };
+}
+
+/**
+ * Validate a driving licence number in the 15-character Sarathi format with a known state code
+ * and a plausible issue year. Older state-specific layouts (for example `RJ-13/DLC/12/123456`)
+ * are rejected. Input must be normalised.
+ */
+export function isValidDrivingLicence(value: string): boolean {
+  return normalizeDrivingLicence(value) === value && parseDrivingLicence(value) !== undefined;
+}

@@ -7,7 +7,9 @@
 [![downloads](https://img.shields.io/npm/dm/zod-india)](https://www.npmjs.com/package/zod-india)
 
 [Zod](https://zod.dev) schemas and zero-dependency validators for Indian identifiers and formats:
-**GSTIN, CIN, PAN, TAN, IFSC, UPI ID, mobile number, PIN code, Aadhaar, Udyam registration and vehicle registration**.
+**GSTIN, CIN, PAN, TAN, IFSC, UPI ID, mobile number, PIN code, Aadhaar, Udyam registration, vehicle registration, driving licence, passport and voter ID (EPIC)**.
+
+- Cross-field KYC check: the PAN inside a GSTIN must match the PAN on the same form (`gstinMatchesPANRefinement`).
 
 - Real checksums where they exist: GSTIN mod-36 and Aadhaar Verhoeff, not just regexes.
 - Normalises messy input (`" 27aapfu0939f1zv "` → `27AAPFU0939F1ZV`, `098765 43210` → `+919876543210`).
@@ -73,19 +75,40 @@ panEntityType('AAPFU0939F'); // 'Firm / LLP'
 
 ## Validators
 
-| Format       | Schema             | Function               | How it is checked                                                                                                                                        | Normalised output       |
-| ------------ | ------------------ | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| CIN          | `zCIN()`           | `isValidCIN`           | 21 characters; L/U listing status, 5-digit industry code, known 2-letter state code, 4-digit year, 3-letter company type and 6-digit registration number | `L17110MH1973PLC019786` |
-| GSTIN        | `zGSTIN()`         | `isValidGSTIN`         | 15 chars; known GST state code (01–38, 97, 99); characters 3–12 a valid PAN; 13th 1–9/A–Z; 14th `Z`; 15th the GSTN mod-36 check character                | `27AAPFU0939F1ZV`       |
-| PAN          | `zPAN()`           | `isValidPAN`           | `AAAPA9999A`; 4th char a holder type (A B C F G H J L P T). PAN has no public checksum                                                                   | `ABCPD1234E`            |
-| TAN          | `zTAN()`           | `isValidTAN`           | `AAAA99999A`                                                                                                                                             | `DELA12345B`            |
-| IFSC         | `zIFSC()`          | `isValidIFSC`          | 4 letters, a `0`, 6 alphanumerics (RBI format)                                                                                                           | `SBIN0000001`           |
-| UPI ID (VPA) | `zUPI()`           | `isValidUPI`           | `handle@psp` syntax only. **Does not check that the PSP handle exists**                                                                                  | `name@okaxis`           |
-| Mobile       | `zMobile()`        | `isValidMobile`        | Optional `+91` / `91` / `0091` / `0`, then 10 digits starting 6–9. Spaces, dashes, brackets allowed                                                      | `+919876543210` (E.164) |
-| PIN code     | `zPincode()`       | `isValidPincode`       | 6 digits, first 1–9                                                                                                                                      | `110001`                |
-| Aadhaar      | `zAadhaar()`       | `isValidAadhaar`       | 12 digits, not starting 0 or 1, valid Verhoeff check digit                                                                                               | `234123412346`          |
-| Udyam (MSME) | `zUdyam()`         | `isValidUdyam`         | `UDYAM-SS-DD-NNNNNNN`: prefix, 2-letter state, 2-digit district and 7-digit serial                                                                       | `UDYAM-MH-26-0012345`   |
-| Vehicle reg. | `zVehicleNumber()` | `isValidVehicleNumber` | `SS NN X(XX) NNNN` with a known state/UT code, or Bharat series `YY BH NNNN XX`                                                                          | `DL01AB1234`            |
+| Format          | Schema              | Function                | How it is checked                                                                                                                                                              | Normalised output       |
+| --------------- | ------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------- |
+| CIN             | `zCIN()`            | `isValidCIN`            | 21 characters; L/U listing status, 5-digit industry code, known 2-letter state code, 4-digit year, 3-letter company type and 6-digit registration number                       | `L17110MH1973PLC019786` |
+| GSTIN           | `zGSTIN()`          | `isValidGSTIN`          | 15 chars; known GST state code (01-38, 97, 99); characters 3-12 a valid PAN; 13th 1-9/A-Z; 14th `Z`; 15th the GSTN mod-36 check character                                      | `27AAPFU0939F1ZV`       |
+| PAN             | `zPAN()`            | `isValidPAN`            | `AAAPA9999A`; 4th char a holder type (A B C F G H J L P T). PAN has no public checksum                                                                                         | `ABCPD1234E`            |
+| TAN             | `zTAN()`            | `isValidTAN`            | `AAAA99999A`                                                                                                                                                                   | `DELA12345B`            |
+| IFSC            | `zIFSC()`           | `isValidIFSC`           | 4 letters, a `0`, 6 alphanumerics (RBI format)                                                                                                                                 | `SBIN0000001`           |
+| UPI ID (VPA)    | `zUPI()`            | `isValidUPI`            | `handle@psp` syntax only. **Does not check that the PSP handle exists**                                                                                                        | `name@okaxis`           |
+| Mobile          | `zMobile()`         | `isValidMobile`         | Optional `+91` / `91` / `0091` / `0`, then 10 digits starting 6-9. Spaces, dashes, brackets allowed                                                                            | `+919876543210` (E.164) |
+| PIN code        | `zPincode()`        | `isValidPincode`        | 6 digits, first 1-9                                                                                                                                                            | `110001`                |
+| Aadhaar         | `zAadhaar()`        | `isValidAadhaar`        | 12 digits, not starting 0 or 1, valid Verhoeff check digit                                                                                                                     | `234123412346`          |
+| Udyam (MSME)    | `zUdyam()`          | `isValidUdyam`          | `UDYAM-SS-DD-NNNNNNN`: prefix, 2-letter state, 2-digit district and 7-digit serial                                                                                             | `UDYAM-MH-26-0012345`   |
+| Vehicle reg.    | `zVehicleNumber()`  | `isValidVehicleNumber`  | `SS NN X(XX) NNNN` with a known state/UT code, or Bharat series `YY BH NNNN XX`                                                                                                | `DL01AB1234`            |
+| Driving licence | `zDrivingLicence()` | `isValidDrivingLicence` | 15-character Sarathi layout `SSRRYYYYNNNNNNN`: known state/UT code, RTO not `00`, issue year from 1950 to this year, 7-digit serial. Older state-specific layouts are rejected | `MH1420110062821`       |
+| Passport        | `zPassport()`       | `isValidPassport`       | One letter and seven digits. No public checksum                                                                                                                                | `K1234567`              |
+| Voter ID (EPIC) | `zVoterID()`        | `isValidVoterID`        | Three letters and seven digits                                                                                                                                                 | `ABC1234567`            |
+
+## Cross-field check: GSTIN belongs to the PAN
+
+A GSTIN carries its holder's PAN in characters 3 to 12. When a form asks for both, a GSTIN that is valid on its own can still belong to another business. `gstinMatchesPANRefinement()` catches that:
+
+```ts
+import { z } from 'zod';
+import { zGSTIN, zPAN, gstinMatchesPANRefinement } from 'zod-india';
+
+const Business = z
+  .object({ gstin: zGSTIN(), pan: zPAN() })
+  .superRefine(gstinMatchesPANRefinement()); // or { gstin: 'businessGstin', pan: 'ownerPan', message }
+
+Business.safeParse({ gstin: '27AAPFU0939F1ZV', pan: 'ABCPD1234E' });
+// error on path ['gstin']: 'GSTIN does not belong to this PAN'
+```
+
+It stays quiet when either field is missing or invalid, so you get one error per problem. Without Zod: `gstinMatchesPAN(gstin, pan)`.
 
 ## CIN validation
 
@@ -96,6 +119,7 @@ The CIN state-code list follows the Ministry of Corporate Affairs' published [st
 - `maskAadhaar(value, maskChar = 'X')` → `XXXX XXXX 1234`. Keeps only the last 4 digits.
 - `verhoeffValidate(digits)` / `verhoeffGenerate(digits)`: general-purpose Verhoeff.
 - `gstinCheckChar(first14)`: compute the GSTIN check character.
+- `gstinMatchesPAN(gstin, pan)`, `parseDrivingLicence(value)` → `{ stateCode, rto, year, serial }`.
 - `parseGSTIN`, `panEntityType`, and the tables `GST_STATE_CODES`, `PAN_ENTITY_TYPES`, `VEHICLE_STATE_CODES`.
 
 ## Formatting (lakh / crore)
@@ -168,17 +192,32 @@ app.post('/kyc', zValidator('json', z.object({ pan: zPAN(), ifsc: zIFSC() })), (
 
 ## Notes and known limits
 
-- **GSTIN**: only regular PAN-based registrations are accepted. Special registrations (UN bodies with a UIN, non-resident OIDAR, TAN-based TDS/TCS) use a different structure in characters 3–12 and are rejected; `{ checksum: false }` only skips the 15th-character check, it does not accept those formats.
+- **GSTIN**: only regular PAN-based registrations are accepted. Special registrations (UN bodies with a UIN, non-resident OIDAR, TAN-based TDS/TCS) use a different structure in characters 3-12 and are rejected; `{ checksum: false }` only skips the 15th-character check, it does not accept those formats.
 - **Aadhaar**: the Verhoeff check catches all single-digit typos and adjacent swaps, but random 12-digit numbers still pass about 1 time in 10. Never log or store full Aadhaar numbers; mask them (see UIDAI guidance).
 - **Vehicle numbers**: state-series formats vary by RTO; the rule here is deliberately permissive within a known state prefix.
 - **Mobile**: Indian mobile numbers only, not landlines.
+- **Driving licence**: only the 15-character Sarathi layout. Licences printed in an older state format (for example `RJ-13/DLC/12/123456`) are rejected; most have a 15-character form once migrated to Sarathi. There is no checksum.
+- **Passport and voter ID**: format checks only. Neither number has a public checksum.
+- **Telangana**: both `TS` and `TG` are accepted on vehicle numbers and driving licences.
 
 ## Comparison
 
-| Package                                                            | Zod schemas | GSTIN checksum  | Aadhaar Verhoeff | Normalisation | Types  | Zod v3 + v4 |
-| ------------------------------------------------------------------ | ----------- | --------------- | ---------------- | ------------- | ------ | ----------- |
-| **zod-india**                                                      | ✅          | ✅              | ✅               | ✅            | ✅     | ✅          |
-| single-format packages (`gstin-validator`, `aadhaar-validator`, …) | ❌          | one format each | one format each  | ❌            | varies | ❌          |
+Checked against the published packages on 26 Nov 2026.
+
+|                                                             | **zod-india**     | [indycheck](https://www.npmjs.com/package/indycheck) 0.2.4 | single-format packages (`gstin-validator`, `aadhaar-validator`, ...) |
+| ----------------------------------------------------------- | ----------------- | ---------------------------------------------------------- | -------------------------------------------------------------------- |
+| Zod schemas                                                 | Yes, the main API | Optional `indycheck/zod` entry                             | No                                                                   |
+| Zod versions                                                | v3 and v4         | v3 only (peer `^3.23.0`)                                   | n/a                                                                  |
+| GSTIN mod-36, Aadhaar Verhoeff                              | Yes               | Yes                                                        | One format each                                                      |
+| PAN, TAN, IFSC, UPI, PIN, CIN, mobile, vehicle, voter ID    | Yes               | Yes                                                        | One format each                                                      |
+| Driving licence, passport, Udyam                            | Yes               | No                                                         | No                                                                   |
+| GSTIN matches PAN (cross-field)                             | Yes               | No (checks the embedded PAN format only)                   | No                                                                   |
+| LLPIN, auto-detect, Hinglish error messages                 | No                | Yes                                                        | No                                                                   |
+| Lakh/crore formatting, amounts in words (English and Hindi) | Yes               | No                                                         | No                                                                   |
+| Offline lookups (RTO, postal zone, bank code)               | Yes               | No                                                         | No                                                                   |
+| Seeded fake data for tests                                  | Yes               | Generators for PAN, Aadhaar, GSTIN, mobile, vehicle        | No                                                                   |
+
+If you need LLPIN or format auto-detection today, indycheck has them.
 
 ## Contributing
 
